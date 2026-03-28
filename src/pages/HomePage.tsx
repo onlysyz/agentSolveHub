@@ -65,6 +65,11 @@ export function HomePage() {
     <div>
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#005bc4]/5 to-transparent py-20">
+        {/* Install CLI - Fixed Right Side */}
+        <div className="absolute right-8 top-8 w-72">
+          <InstallCLI />
+        </div>
+
         <div className="max-w-4xl mx-auto px-4 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -77,7 +82,7 @@ export function HomePage() {
             面向 AI Agent 执行问题的结构化解法库，覆盖浏览器、桌面软件与常见工具操作
           </p>
 
-          {/* Search Box */}
+          {/* Search Box - Centered */}
           <form onSubmit={handleSearch} className="max-w-2xl mx-auto">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#575f72]" />
@@ -106,11 +111,6 @@ export function HomePage() {
                 {platform}
               </Link>
             ))}
-          </div>
-
-          {/* Install CLI */}
-          <div className="mt-8 max-w-2xl mx-auto">
-            <InstallCLI />
           </div>
 
           {/* Hot Tasks */}
