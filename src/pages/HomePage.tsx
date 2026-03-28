@@ -6,6 +6,7 @@ import { getProblems } from '../services/problems';
 import type { Problem } from '../types';
 import { StatusBadge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
+import { InstallCLI } from '../components/ui/InstallCLI';
 
 const HOT_PLATFORMS = ['Chrome', 'Notion', 'CapCut', 'Excel', 'Docker', 'Figma'];
 const HOT_TASKS = ['上传文件', '导出视频', '登录验证', '弹窗处理'];
@@ -94,7 +95,7 @@ export function HomePage() {
           </form>
 
           {/* Hot Platforms */}
-          <div className="mt-6 flex flex-wrap justify-center gap-2">
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
             <span className="text-sm text-[#575f72]">热门软件:</span>
             {HOT_PLATFORMS.map((platform) => (
               <Link
@@ -105,6 +106,11 @@ export function HomePage() {
                 {platform}
               </Link>
             ))}
+          </div>
+
+          {/* Install CLI */}
+          <div className="mt-8 max-w-2xl mx-auto">
+            <InstallCLI />
           </div>
 
           {/* Hot Tasks */}
