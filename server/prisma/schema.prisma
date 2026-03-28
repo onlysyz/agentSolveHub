@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  nickname      String?
+  avatar        String?
+  role          String    @default("user") // user, admin
+  emailVerified Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  problems      Problem[]
+  solutions     Solution[]
+  feedback      Feedback[]
+  verifications Verification[]
+}
+
+model Problem {
+  id                  String    @id @default(cuid())
+  title               String
+  summary             String?
+  goal                String
+  platformName        String    // e.g., Docker, Chrome, Notion
+  taskType            String    // e.g., deploy, export, login
+  osType              String?   // e.g., Windows, macOS, Linux
+  softwareVersion     String?
+  language            String?   // e.g., en, zh-CN
+  errorMessage        String?
+  attemptedSteps      String?   // JSON array
+  status              String    @default("pending") // pending, available, solved, verified
+  verificationStatus  String    @default("unverified") // unverified, community_verified, multi_verified, possibly_invalid
+  viewCount           Int       @default(0)
+  createdById         String
+  createdBy           User      @relation(fields: [createdById], references: [id])
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  solutions           Solution[]
+  feedback            Feedback[]
+
+  @@index([platformName])
+  @@index([taskType])
+  @@index([status])
+}
+
+model Solution {
+  id                    String    @id @default(cuid())
+  problemId             String
+  problem               Problem   @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  title                 String
+  applicableEnvironment String?   // JSON object
+  rootCause             String?
+  steps                 String    // JSON array of steps
+  alternativePaths      String?   // JSON array
+  verificationMethod    String?
+  invalidConditions     String?
+  notes                 String?
+  verificationStatus    String    @default("unverified")
+  verifiedAt            DateTime?
+  verificationCount     Int       @default(0)
+  createdById           String
+  createdBy             User      @relation(fields: [createdById], references: [id])
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  feedback             Feedback[]
+  verifications        Verification[]
+
+  @@index([problemId])
+}
+
+model Feedback {
+  id              String    @id @default(cuid())
+  problemId       String?
+  solutionId      String?
+  solution        Solution? @relation(fields: [solutionId], references: [id], onDelete: Cascade)
+  problem         Problem?  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  resultType      String    // effective, partial, ineffective
+  environmentNote String?
+  comment         String?
+  createdAt       DateTime  @default(now())
+
+  @@index([solutionId])
+  @@index([problemId])
+}
+
+model Verification {
+  id          String    @id @default(cuid())
+  solutionId  String
+  solution    Solution  @relation(fields: [solutionId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  createdAt   DateTime  @default(now())
+
+  @@index([solutionId])
+}
+
+model EmailCode {
+  id        String   @id @default(cuid())
+  email     String
+  code      String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}

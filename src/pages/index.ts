@@ -1,0 +1,9 @@
+export { HomePage } from './HomePage';
+export { SearchPage } from './SearchPage';
+export { ProblemDetailPage } from './ProblemDetailPage';
+export { SubmitProblemPage } from './SubmitProblemPage';
+export { SubmitSolutionPage } from './SubmitSolutionPage';
+export { CategoriesPage } from './CategoriesPage';
+export { LoginPage } from './LoginPage';
+export { ProfilePage } from './ProfilePage';
+export { AdminPage } from './AdminPage';
