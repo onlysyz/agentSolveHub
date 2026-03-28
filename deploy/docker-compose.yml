@@ -1,0 +1,43 @@
+# Docker Compose 部署方案（可选）
+
+如果不想用一键脚本，可以用这个 docker-compose.yml
+
+```yaml
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: agentSolveHub_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: agent_solve_hub
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./server
+    container_name: agentSolveHub_api
+    environment:
+      DATABASE_URL: postgresql://postgres:your_password@postgres:5432/agent_solve_hub
+      JWT_SECRET: your-jwt-secret
+      PORT: 3001
+    depends_on:
+      - postgres
+    ports:
+      - "127.0.0.1:3001:3001"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+```
+
+启动方式：
+```bash
+docker-compose up -d
+```
