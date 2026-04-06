@@ -7,16 +7,15 @@ import nodemailer from 'nodemailer';
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-change-me';
 
-// Email configuration from environment variables
-const EMAIL_HOST = process.env.SMTP_HOST || '';
-const EMAIL_PORT = parseInt(process.env.SMTP_PORT || '465', 10);
-const EMAIL_USER = process.env.SMTP_USER || '';
-const EMAIL_PASS = process.env.SMTP_PASS || '';
-const EMAIL_FROM = process.env.SMTP_FROM || 'AgentSolveHub <noreply@agentsolvehub.com>';
-
-// Create email transporter
+// Create email transporter (reads env vars lazily to ensure dotenv is loaded first)
 function createTransporter() {
+  const EMAIL_HOST = process.env.SMTP_HOST || '';
+  const EMAIL_PORT = parseInt(process.env.SMTP_PORT || '465', 10);
+  const EMAIL_USER = process.env.SMTP_USER || '';
+  const EMAIL_PASS = process.env.SMTP_PASS || '';
+
   if (!EMAIL_HOST || !EMAIL_USER || !EMAIL_PASS) {
+    console.log('[EMAIL] SMTP config missing:', { EMAIL_HOST: !!EMAIL_HOST, EMAIL_USER: !!EMAIL_USER, EMAIL_PASS: !!EMAIL_PASS });
     return null;
   }
   return nodemailer.createTransport({
@@ -51,6 +50,7 @@ async function sendEmailCode(email: string, code: string): Promise<boolean> {
   }
 
   try {
+    const EMAIL_FROM = process.env.SMTP_FROM || 'AgentSolveHub <noreply@agentsolvehub.com>';
     await transporter.sendMail({
       from: EMAIL_FROM,
       to: email,

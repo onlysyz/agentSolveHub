@@ -1,9 +1,11 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import { PrismaClient } from '@prisma/client';
-import dotenv from 'dotenv';
 
 import problemsRouter from './routes/problems.js';
 import solutionsRouter from './routes/solutions.js';
@@ -11,8 +13,7 @@ import feedbackRouter from './routes/feedback.js';
 import authRouter from './routes/auth.js';
 import categoriesRouter from './routes/categories.js';
 import usersRouter from './routes/users.js';
-
-dotenv.config();
+import v1Router from './routes/v1/index.js';
 
 const app = express();
 const prisma = new PrismaClient();
@@ -28,6 +29,7 @@ app.use(express.json());
 app.locals.prisma = prisma;
 
 // Routes
+app.use('/api/v1', v1Router);  // Agent-friendly API (must be before /api/*)
 app.use('/api/problems', problemsRouter);
 app.use('/api/solutions', solutionsRouter);
 app.use('/api/feedback', feedbackRouter);

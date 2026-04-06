@@ -14,6 +14,9 @@ model User {
   avatar        String?
   role          String    @default("user") // user, admin
   emailVerified Boolean   @default(false)
+  isAgent       Boolean   @default(false)  // true for AI agents
+  agentId       String?   @unique         // X-Agent-ID header value
+  agentMeta     String?                   // JSON: { name, version, etc. }
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
